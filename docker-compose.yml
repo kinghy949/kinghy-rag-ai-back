@@ -1,0 +1,68 @@
+version: '3'
+services:
+  vector_db:
+    image: ankane/pgvector:v0.5.0
+    container_name: vector_db
+    restart: always
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123456
+      - POSTGRES_DB=kinghy_rag
+      - PGPASSWORD=postgres
+    volumes:
+      - ./sql/init.sql:/docker-entrypoint-initdb.d/init.sql
+    logging:
+      options:
+        max-size: 10m
+        max-file: "3"
+    ports:
+      - '5432:5432'
+    healthcheck:
+      test: "pg_isready -U postgres -d vector_store"
+      interval: 2s
+      timeout: 20s
+      retries: 10
+    networks:
+      - know-hub-network
+
+  know-hub-backend:
+    image: ningning0111/know-hub-ai-backend
+    restart: always
+    container_name: know-hub-ai-backend
+    ports:
+      - "8329:8329"
+    environment:
+      - PGVECTOR_HOST=vector_db
+      - PGVECTOR_DATABASE=know-hub
+      - PGVECTOR_USERNAME=postgres
+      - PGVECTOR_PASSWORD=postgres
+#     Key分享自：https://pgthinker.me/2023/10/03/196/
+      - DEFAULT_BASE_URL=https://api.mnzdna.xyz
+      - DEFAULT_API_KEY=sk-**********
+    depends_on:
+      - vector_db
+    networks:
+      - know-hub-network
+
+  minio:
+    image: minio/minio:latest
+    restart: always
+    container_name: minio
+    privileged: true
+    command: server --address ":9000" --console-address ":9001" /data
+    ports:
+      - '9010:9000'
+      - '9011:9001'
+    networks:
+      - know-hub-network
+    volumes:
+      - './config:/root/.minio'
+      - './data:/data'
+    environment:
+      - MINIO_ROOT_USER=minioadmin
+      - MINIO_ROOT_PASSWORD=minioadmin
+      - MINIO_DEFAULT_BUCKETS=know-hub
+      - MINIO_PUBLIC=on
+networks:
+  know-hub-network:
+    driver: bridge

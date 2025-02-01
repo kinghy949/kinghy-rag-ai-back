@@ -1,0 +1,18 @@
+server:
+  port: 8989
+
+spring:
+  ai:
+    dashscope:
+      api-key: sk-bb596ad2276a40398dc94956d1d6c74f
+    vectorstore:
+      pgvector:
+      index-type: HNSW
+      distance-type: COSINE_DISTANCE
+      dimensions: 1536
+  datasource:
+    username: postgres
+    password: 123456
+    url: jdbc:postgresql://localhost:5432/kinghy_rag
+    driver-class-name: org.postgresql.Driver
+
