@@ -19,6 +19,9 @@ package com.kinghy.rag.controller;
 
 import com.alibaba.cloud.ai.advisor.RetrievalRerankAdvisor;
 import com.alibaba.cloud.ai.model.RerankModel;
+import com.kinghy.rag.common.ApplicationConstant;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatModel;
@@ -42,14 +45,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-/**
- *
- * @author WANG,ZHEN
- * @since 1.0.0-M3
- */
+@Tag(name="AiRagController",description = "Rag接口")
 @Slf4j
 @RestController
-@RequestMapping("/ai")
+@RequestMapping(ApplicationConstant.API_VERSION + "/ai")
 public class AiRagController {
     @Value("classpath:/prompts/system-qa.st")
     private Resource systemResource;
@@ -67,7 +66,8 @@ public class AiRagController {
         this.rerankModel = rerankModel;
     }
 
-    @GetMapping("/rag/importDocument")
+    @Operation(summary = "importDocument",description = "文件上传接口")
+    @GetMapping("/importDocument")
     public void importDocument() {
         // 1. parse document
         DocumentReader reader = new PagePdfDocumentReader(springAiResource);
@@ -83,6 +83,8 @@ public class AiRagController {
         // 3. create embedding and store to vector store
         vectorStore.add(splitDocuments);
     }
+
+    @Operation(summary = "rag",description = "Rag对话接口")
     @GetMapping(value = "/rag", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     public Flux<ChatResponse> generate(@RequestParam(value = "message",
             defaultValue = "how to get start with spring ai alibaba?") String message) throws IOException {
