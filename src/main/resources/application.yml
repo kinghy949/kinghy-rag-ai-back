@@ -16,3 +16,10 @@ spring:
     url: jdbc:postgresql://localhost:5432/kinghy_rag
     driver-class-name: org.postgresql.Driver
 
+aliyun:
+  alioss:
+    endpoint: ${sky.alioss.endpoint}
+    access-key-id: ${sky.alioss.access-key-id}
+    access-key-secret: ${sky.alioss.access-key-secret}
+    bucket-name: ${sky.alioss.bucket-name}
+
