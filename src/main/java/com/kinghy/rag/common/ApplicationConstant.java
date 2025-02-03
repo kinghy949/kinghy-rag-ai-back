@@ -1,12 +1,5 @@
 package com.kinghy.rag.common;
 
-/**
- * @Project: com.ningning0111.common
- * @Author: pgthinker
- * @GitHub: https://github.com/ningning0111
- * @Date: 2024/4/2 17:42
- * @Description:
- */
 public class ApplicationConstant {
     public final static String API_VERSION = "/api/v1";
     public final static String APPLICATION_NAME = "know-hub-ai";

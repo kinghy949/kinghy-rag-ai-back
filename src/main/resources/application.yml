@@ -2,6 +2,8 @@ server:
   port: 8989
 
 spring:
+  profiles:
+    active: dev
   ai:
     dashscope:
       api-key: ${kinghy.dashscope.api-key}

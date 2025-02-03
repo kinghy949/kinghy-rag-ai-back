@@ -5,13 +5,6 @@ import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 
-/**
- * @Project: com.ningning0111.common
- * @Author: pgthinker
- * @GitHub: https://github.com/ningning0111
- * @Date: 2024/3/3 02:33
- * @Description:
- */
 @Data
 @NoArgsConstructor
 public class BaseResponse<T> implements Serializable {
