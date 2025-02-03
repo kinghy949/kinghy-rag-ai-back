@@ -4,7 +4,8 @@ server:
 spring:
   ai:
     dashscope:
-      api-key: sk-bb596ad2276a40398dc94956d1d6c74f
+      api-key: ${kinghy.dashscope.api-key}
+
     vectorstore:
       pgvector:
       index-type: HNSW
@@ -18,8 +19,7 @@ spring:
 
 aliyun:
   alioss:
-    endpoint: ${sky.alioss.endpoint}
-    access-key-id: ${sky.alioss.access-key-id}
-    access-key-secret: ${sky.alioss.access-key-secret}
-    bucket-name: ${sky.alioss.bucket-name}
-
+    endpoint: ${kinghy.alioss.endpoint}
+    access-key-id: ${kinghy.alioss.access-key-id}
+    access-key-secret: ${kinghy.alioss.access-key-secret}
+    bucket-name: ${kinghy.alioss.bucket-name}
