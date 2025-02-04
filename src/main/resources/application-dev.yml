@@ -1,0 +1,8 @@
+kinghy:
+  alioss:
+    endpoint: oss-cn-beijing.aliyuncs.com
+    access-key-id:
+    access-key-secret:
+    bucket-name: kinghy-rag
+  dashscope:
+    api-key:
