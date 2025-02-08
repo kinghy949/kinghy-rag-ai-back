@@ -77,6 +77,9 @@ public class AiRagController {
     private final ChatModel chatModel;
     private final RerankModel rerankModel;
 
+    @Autowired
+    private TokenTextSplitter tokenTextSplitter;
+
     public AiRagController(VectorStore vectorStore, ChatModel chatModel, RerankModel rerankModel) {
         this.vectorStore = vectorStore;
         this.chatModel = chatModel;
@@ -100,11 +103,13 @@ public class AiRagController {
         }
         for (MultipartFile file : files) {
             Resource resource = file.getResource();
-            DocumentReader reader = new PagePdfDocumentReader(resource);
-            List<Document> documents = reader.get();
-
-            // 2. split trunks
-            List<Document> splitDocuments = new TokenTextSplitter().apply(documents);
+            TikaDocumentReader tkReader = new TikaDocumentReader(resource);
+            List<Document> documents = tkReader.get();
+            List<Document> splitDocuments = tokenTextSplitter.apply(documents);
+//            DocumentReader reader = new PagePdfDocumentReader(resource);
+//            List<Document> documents = reader.get();
+//            // 2. split trunks
+//            List<Document> splitDocuments = new TokenTextSplitter().apply(documents);
 
             // 3. create embedding and store to vector store
             vectorStore.add(splitDocuments);
