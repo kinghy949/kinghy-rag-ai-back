@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kinghy.rag.mapper.AliOssFileMapper">
+
+    <resultMap id="BaseResultMap" type="com.kinghy.rag.entity.AliOssFile">
+            <id property="id" column="id" />
+            <result property="fileName" column="file_name" />
+            <result property="url" column="url" />
+            <result property="vectorId" column="vector_id" />
+            <result property="createTime" column="create_time" />
+            <result property="updateTime" column="update_time" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,file_name,url,vector_id,create_time,update_time
+    </sql>
+    <select id="findByFileNameContaining" resultType="com.kinghy.rag.entity.AliOssFile">
+        SELECT * FROM ali_oss_file
+        WHERE file_name LIKE CONCAT('%', #{fileName}, '%')
+        ORDER BY id
+    </select>
+</mapper>

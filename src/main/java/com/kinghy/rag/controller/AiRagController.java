@@ -71,14 +71,11 @@ public class AiRagController {
 //    @Value("classpath:/data/spring_ai_alibaba_quickstart.pdf")
 //    private Resource springAiResource;
 
-    @Autowired
-    private AliOssUtil aliOssUtil;
+
     private final VectorStore vectorStore;
     private final ChatModel chatModel;
     private final RerankModel rerankModel;
 
-    @Autowired
-    private TokenTextSplitter tokenTextSplitter;
 
     public AiRagController(VectorStore vectorStore, ChatModel chatModel, RerankModel rerankModel) {
         this.vectorStore = vectorStore;
@@ -87,46 +84,7 @@ public class AiRagController {
     }
 
 
-    /**
-     * 上传附件接口
-     *
-     * @param
-     * @return
-     * @throws IOException
-     */
 
-    @Operation(summary = "upload", description = "上传附件接口")
-    @PostMapping(value = "/upload", headers = "content-type=multipart/form-data")
-    public BaseResponse<String> upload(@RequestParam("file") List<MultipartFile> files) {
-        if (files.isEmpty()) {
-            return ResultUtils.error(ErrorCode.PARAMS_ERROR, "请上传文件");
-        }
-        for (MultipartFile file : files) {
-            Resource resource = file.getResource();
-            TikaDocumentReader tkReader = new TikaDocumentReader(resource);
-            List<Document> documents = tkReader.get();
-            List<Document> splitDocuments = tokenTextSplitter.apply(documents);
-//            DocumentReader reader = new PagePdfDocumentReader(resource);
-//            List<Document> documents = reader.get();
-//            // 2. split trunks
-//            List<Document> splitDocuments = new TokenTextSplitter().apply(documents);
-
-            // 3. create embedding and store to vector store
-            vectorStore.add(splitDocuments);
-            try {
-                String originalFilename = file.getOriginalFilename();
-                String extension = originalFilename.substring(originalFilename.lastIndexOf("."));
-                String objectName = UUID.randomUUID() + extension;
-                String filePath = aliOssUtil.upload(file.getBytes(), objectName);
-                // TODO 知识库管理
-            } catch (IOException e) {
-                e.printStackTrace();
-                log.info("文件上传OSS失败" + file.getOriginalFilename());
-            }
-        }
-
-        return ResultUtils.success("文件上传成功");
-    }
 
 
     @Operation(summary = "rag", description = "Rag对话接口")

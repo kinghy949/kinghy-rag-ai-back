@@ -6,9 +6,13 @@ import com.aliyun.oss.OSSClientBuilder;
 import com.aliyun.oss.OSSException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.TimeUnit;
 
 @Data
 @AllArgsConstructor
@@ -66,4 +70,39 @@ public class AliOssUtil {
 
         return stringBuilder.toString();
     }
+
+
+
+    /**
+     * 删除文件
+     */
+    /**
+     * @param objectName
+     * @Method deleteOss
+     * @Author lofxve
+     * @Description 删除oss文件
+     * @Date 2021/4/21 9:02
+     * @Return boolean
+     */
+    public boolean deleteOss(String objectName) {
+        // 创建OSSClient实例。
+        OSS ossClient = new OSSClientBuilder().build(endpoint, accessKeyId, accessKeySecret);
+        try {
+            URL url = new URL(objectName);
+            String fileName = url.getPath().replaceFirst("/", "");
+            // 删除文件
+            ossClient.deleteObject(bucketName, fileName);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }finally {
+            if (ossClient != null) {
+                ossClient.shutdown();
+            }
+
+        }
+        return true;
+    }
+
+
 }
