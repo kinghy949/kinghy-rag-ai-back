@@ -1,7 +1,7 @@
 package com.kinghy.rag.mapper;
 
-import generator.domain.Test;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.kinghy.rag.entity.Test;
 
 /**
 * @author EDY

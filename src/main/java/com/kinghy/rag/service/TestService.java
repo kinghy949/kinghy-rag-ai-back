@@ -1,7 +1,7 @@
 package com.kinghy.rag.service;
 
-import generator.domain.Test;
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.kinghy.rag.entity.Test;
 
 /**
 * @author EDY

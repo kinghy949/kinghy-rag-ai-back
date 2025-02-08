@@ -1,8 +1,8 @@
 package com.kinghy.rag.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.kinghy.rag.entity.Test;
 import com.kinghy.rag.service.TestService;
-import generator.domain.Test;
 import com.kinghy.rag.mapper.TestMapper;
 import org.springframework.stereotype.Service;
 
