@@ -77,14 +77,12 @@ public class AiRagController {
     private final RerankModel rerankModel;
 
 
+
     public AiRagController(VectorStore vectorStore, ChatModel chatModel, RerankModel rerankModel) {
         this.vectorStore = vectorStore;
         this.chatModel = chatModel;
         this.rerankModel = rerankModel;
     }
-
-
-
 
 
     @Operation(summary = "rag", description = "Rag对话接口")
@@ -93,11 +91,12 @@ public class AiRagController {
             defaultValue = "你好") String message) throws IOException {
         SearchRequest searchRequest = SearchRequest.builder().build();
         String promptTemplate = systemResource.getContentAsString(StandardCharsets.UTF_8);
-
-        return ChatClient.builder(chatModel)
+        ChatClient chatClient = ChatClient.builder(chatModel)
                 .defaultAdvisors(new RetrievalRerankAdvisor(vectorStore, rerankModel, searchRequest, promptTemplate, 0.1))
-                .build()
-                .prompt()
+                .build();
+
+        // 移除 data: 前缀
+        return chatClient.prompt()
                 .user(message)
                 .stream()
                 .content();

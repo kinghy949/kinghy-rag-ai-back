@@ -1,5 +1,7 @@
 package com.kinghy.rag.config;
 
+import com.alibaba.cloud.ai.advisor.RetrievalRerankAdvisor;
+import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,5 +22,12 @@ public class ApplicationConfig {
     public TokenTextSplitter tokenTextSplitter() {
         return new TokenTextSplitter();
     }
+
+    @Bean
+    ChatClient chatclient(ChatClient.Builder builder){
+        return builder.defaultSystem("你是一个乐于助人解决问题的AI机器人")
+                .build();
+    }
+
 
 }

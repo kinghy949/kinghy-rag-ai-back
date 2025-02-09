@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 
@@ -22,11 +23,8 @@ import reactor.core.publisher.Flux;
 @RequestMapping(ApplicationConstant.API_VERSION + "/chat")
 public class ChatController {
 
-    private final ChatClient chatClient;
-
-    public ChatController(ChatClient.Builder builder) {
-        this.chatClient = builder.build();
-    }
+    @Autowired
+    private  ChatClient chatClient;
 
     @Operation(summary = "stream",description = "流式对话接口")
     @GetMapping(value = "/stream")
