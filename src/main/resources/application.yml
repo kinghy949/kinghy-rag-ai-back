@@ -29,3 +29,15 @@ aliyun:
     access-key-id: ${kinghy.alioss.access-key-id}
     access-key-secret: ${kinghy.alioss.access-key-secret}
     bucket-name: ${kinghy.alioss.bucket-name}
+
+kinghy:
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: kinghy
+    # 设置jwt过期时间
+    admin-ttl: 7200000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+    user-secret-key: kinghy
+    user-ttl: 7200000
+    user-token-name: authentication
