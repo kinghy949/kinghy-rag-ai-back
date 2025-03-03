@@ -42,6 +42,24 @@ public class UserController {
     private JwtProperties jwtProperties;
 
     /**
+     * 注册
+     *
+     */
+        @PostMapping("/register")
+    @Operation(summary = "register",description = "注册")
+    public BaseResponse register(@RequestBody User user) {
+        log.info("注册：{}", user.toString());
+
+        if (userService.getByUsername(user.getUserName())) {
+            return ResultUtils.error("用户名已存在");
+        }else {
+            userService.register(user);
+        }
+        return ResultUtils.success("注册成功");
+    }
+
+
+    /**
      * 登录
      *
      * @param

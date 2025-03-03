@@ -19,6 +19,7 @@ package com.kinghy.rag.controller;
 
 import com.alibaba.cloud.ai.advisor.RetrievalRerankAdvisor;
 import com.alibaba.cloud.ai.model.RerankModel;
+import com.kinghy.rag.annotation.Loggable;
 import com.kinghy.rag.common.ApplicationConstant;
 import com.kinghy.rag.common.BaseResponse;
 import com.kinghy.rag.common.ErrorCode;
@@ -46,8 +47,10 @@ import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.codec.ServerSentEvent;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
 import reactor.core.publisher.Flux;
 
 import java.io.File;
@@ -58,6 +61,8 @@ import java.nio.file.StandardCopyOption;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
 @Tag(name = "AiRagController", description = "Rag接口")
@@ -87,15 +92,14 @@ public class AiRagController {
 
     @Operation(summary = "rag", description = "Rag对话接口")
     @GetMapping(value = "/rag", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<String> generate(@RequestParam(value = "message",
-            defaultValue = "你好") String message) throws IOException {
+    @Loggable
+    public Flux<String> generate(@RequestParam(value = "message", defaultValue = "你好") String message) throws IOException {
         SearchRequest searchRequest = SearchRequest.builder().build();
         String promptTemplate = systemResource.getContentAsString(StandardCharsets.UTF_8);
         ChatClient chatClient = ChatClient.builder(chatModel)
                 .defaultAdvisors(new RetrievalRerankAdvisor(vectorStore, rerankModel, searchRequest, promptTemplate, 0.1))
                 .build();
 
-        // 移除 data: 前缀
         return chatClient.prompt()
                 .user(message)
                 .stream()

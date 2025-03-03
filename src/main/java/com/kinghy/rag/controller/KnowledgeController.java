@@ -95,7 +95,7 @@ public class KnowledgeController {
     }
 
 
-    @Operation(summary = "文件查询",description = "文件查询")
+    @Operation(summary = "contents",description = "文件查询")
     @GetMapping("/contents")
     public BaseResponse queryFiles(QueryFileDTO request){
         if(request.getPage() == null || request.getPageSize() == null){
@@ -104,11 +104,21 @@ public class KnowledgeController {
         return aliOssFileService.queryPage(request);
     }
 
-    @Operation(summary = "文件删除",description = "文件删除")
+    @Operation(summary = "delete",description = "文件删除")
     @DeleteMapping("/delete")
     public BaseResponse deleteFiles(@RequestParam List<Long> ids){
         return aliOssFileService.deleteFiles(ids);
     }
+
+
+    @Operation(summary = "download",description = "文件下载")
+    @GetMapping("/download")
+    public BaseResponse downloadFiles(@RequestParam List<Long> ids){
+        return aliOssFileService.downloadFiles(ids);
+    }
+
+
+
 
 
 }

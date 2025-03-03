@@ -123,6 +123,27 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         userMapper.updateUser(user);
     }
+
+    @Override
+    public void register(User user) {
+        User userResult = new User();
+        BeanUtils.copyProperties(user, userResult);
+        //密码加密
+        String password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
+        userResult.setPassword(password);
+        userResult.setCreateTime(LocalDate.now());
+        userResult.setUpdateTime(LocalDate.now());
+        userResult.setUpdateUser(BaseContext.getCurrentId());
+        userMapper.insert(userResult);
+    }
+
+    @Override
+    public boolean getByUsername(String userName) {
+        if (userMapper.getByUsername(userName) != null) {
+            return true;
+        }
+        return false;
+    }
 }
 
 

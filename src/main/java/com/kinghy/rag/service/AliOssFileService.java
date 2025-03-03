@@ -19,4 +19,6 @@ public interface AliOssFileService extends IService<AliOssFile> {
     BaseResponse queryPage(QueryFileDTO request);
 
     BaseResponse deleteFiles(List<Long> ids);
+
+    BaseResponse downloadFiles(List<Long> ids);
 }

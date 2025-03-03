@@ -17,6 +17,7 @@
 package com.kinghy.rag.controller;
 
 import cn.hutool.core.util.StrUtil;
+import com.kinghy.rag.annotation.Loggable;
 import com.kinghy.rag.common.ApplicationConstant;
 import com.kinghy.rag.common.BaseResponse;
 import com.kinghy.rag.common.ErrorCode;
@@ -51,6 +52,7 @@ public class DrawImageController {
 	}
 
 	@GetMapping("/image")
+	@Loggable
 	public void image(HttpServletResponse response, @RequestParam(value = "prompt") String prompt) {
 
 		ImageResponse imageResponse = imageModel.call(new ImagePrompt(prompt));

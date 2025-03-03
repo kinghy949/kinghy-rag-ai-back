@@ -25,4 +25,8 @@ public interface UserService extends IService<User> {
     void startOrStop(Integer status, Long id);
 
     void updateUser(UserDTO userDTO);
+
+    void register(User user);
+
+    boolean getByUsername(String userName);
 }

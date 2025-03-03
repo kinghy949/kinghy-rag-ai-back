@@ -17,7 +17,7 @@ import org.apache.ibatis.annotations.Select;
 @Mapper
 public interface UserMapper extends BaseMapper<User> {
 
-    @Select("select * from user where user_name = #{userName}")
+    @Select("select * from tb_user where user_name = #{userName}")
     User getByUsername(@Param("userName") String userName);
 
     Page<User> pageQuery(UserPageQueryDTO userPageQueryDTO);

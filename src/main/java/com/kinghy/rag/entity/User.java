@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
  * 
  * @TableName user
  */
-@TableName(value ="user")
+@TableName(value ="tb_user")
 @Data
 @Builder
 @NoArgsConstructor

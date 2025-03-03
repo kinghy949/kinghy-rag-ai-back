@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.kinghy.rag.mapper.LogInfoMapper">
+
+    <resultMap id="BaseResultMap" type="com.kinghy.rag.entity.LogInfo">
+            <id property="id" column="id" />
+            <result property="methodName" column="method_name" />
+            <result property="className" column="class_name" />
+            <result property="requestTime" column="request_time" />
+            <result property="requestParams" column="request_params" />
+            <result property="response" column="response" />
+    </resultMap>
+
+    <sql id="Base_Column_List">
+        id,method_name,class_name,request_time,request_params,response
+    </sql>
+</mapper>

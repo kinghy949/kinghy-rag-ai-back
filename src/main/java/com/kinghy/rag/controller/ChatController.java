@@ -1,5 +1,6 @@
 package com.kinghy.rag.controller;
 
+import com.kinghy.rag.annotation.Loggable;
 import com.kinghy.rag.common.ApplicationConstant;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -59,6 +60,7 @@ public class ChatController {
 
     @Operation(summary = "stream",description = "流式对话接口")
     @GetMapping(value = "/stream")
+    @Loggable
     public Flux<String> streamRagChat(@RequestParam(value = "message", defaultValue = "你好" ) String message,
                                       @RequestParam(value = "prompt", defaultValue = "你是一名AI助手，致力于帮助人们解决问题.") String prompt){
         return chatClient.prompt()

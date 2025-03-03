@@ -25,7 +25,7 @@
         update_user
     </sql>
     <update id="updateUser">
-        update user
+        update tb_user
         <set>
             <if test="name != null">name = #{name},</if>
             <if test="username != null">username = #{username},</if>
@@ -40,7 +40,7 @@
         where id = #{id}
     </update>
     <select id="pageQuery" resultType="com.kinghy.rag.entity.User">
-        select * from user
+        select * from tb_user
         <where>
             <if test="name != null and name != ''">
                 and name like concat('%',#{name},'%')
