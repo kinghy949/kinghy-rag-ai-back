@@ -97,7 +97,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
 
         Page<User> page = userMapper.pageQuery(userPageQueryDTO);
 
-        long total = page.getTotal();
+        long total = page.size();
         List<User> records = page.getResult();
 
         return new PageResult(total, records);
@@ -128,11 +128,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     public void register(User user) {
         User userResult = new User();
         BeanUtils.copyProperties(user, userResult);
-        //密码加密
-        String password = DigestUtils.md5DigestAsHex(user.getPassword().getBytes());
-        userResult.setPassword(password);
+        //设置账号的状态，默认正常状态 1表示正常 0表示锁定
+        userResult.setStatus(StatusConstant.ENABLE);
+        //设置密码，默认密码123456
+        userResult.setPassword(DigestUtils.md5DigestAsHex(PasswordConstant.DEFAULT_PASSWORD.getBytes()));
+
+        //设置当前记录的创建时间和修改时间
         userResult.setCreateTime(LocalDate.now());
         userResult.setUpdateTime(LocalDate.now());
+
+        //设置当前记录创建人id和修改人id
+        userResult.setCreateUser(BaseContext.getCurrentId());
         userResult.setUpdateUser(BaseContext.getCurrentId());
         userMapper.insert(userResult);
     }

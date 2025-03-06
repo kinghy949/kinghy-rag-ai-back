@@ -33,7 +33,7 @@ public class LogInfoController {
 
     @Operation(summary = "分页查询日志信息（带条件查询）")
     @GetMapping("/page")
-    public IPage<LogInfo> getLogInfoPage(
+    public BaseResponse<IPage<LogInfo>> getLogInfoPage(
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam(required = false) String methodName,
@@ -50,13 +50,15 @@ public class LogInfoController {
         if (requestParams != null) {
             queryWrapper.like("request_params", requestParams);
         }
-        return logInfoService.page(pageParam, queryWrapper);
+        Page<LogInfo> result = logInfoService.page(pageParam, queryWrapper);
+        result.setTotal(result.getRecords().size());
+        return ResultUtils.success(result);
     }
 
     @Operation(summary = "批量删除日志信息")
-    @DeleteMapping("/batch")
-    public BaseResponse deleteLogInfos(@RequestParam List<Long> ids) {
-        boolean result = logInfoService.removeByIds(ids);
+    @PostMapping("/batch")
+    public BaseResponse deleteLogInfos() {
+        boolean result = logInfoService.remove(null);
         if (result) {
             return ResultUtils.success("删除成功");
         } else {

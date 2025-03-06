@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.kinghy.rag.common.ApplicationConstant;
 import com.kinghy.rag.common.BaseResponse;
+import com.kinghy.rag.common.ResultUtils;
 import com.kinghy.rag.entity.SensitiveWord;
 import com.kinghy.rag.service.SensitiveWordService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -12,6 +13,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -32,15 +35,33 @@ public class SensitiveWordController {
     private SensitiveWordService sensitiveWordService;
 
     @Operation(summary = "新增敏感词")
-    @PostMapping
-    public boolean addSensitiveWord(@RequestBody SensitiveWord sensitiveWord) {
-        return sensitiveWordService.save(sensitiveWord);
+    @PostMapping("/add")
+    public BaseResponse addSensitiveWord(@RequestBody SensitiveWord sensitiveWord) {
+        log.info("新增敏感词：{}", sensitiveWord);
+        sensitiveWord.setStatus("1");
+        sensitiveWord.setCreatedAt(LocalDate.now().toString());
+        sensitiveWord.setUpdatedAt(LocalDate.now().toString());
+        boolean save = sensitiveWordService.save(sensitiveWord);
+        if (save){
+            return ResultUtils.success(true);
+        }
+        return ResultUtils.error("新增失败");
     }
 
     @Operation(summary = "删除敏感词")
     @DeleteMapping("/{id}")
     public boolean deleteSensitiveWord(@PathVariable Integer id) {
         return sensitiveWordService.removeById(id);
+    }
+
+    @Operation(summary = "批量删除敏感词")
+    @PostMapping("/batch")
+    public BaseResponse deleteSensitiveWords(@RequestBody List<Integer> ids) {
+        boolean b = sensitiveWordService.removeByIds(ids);
+        if (b){
+            return ResultUtils.success("删除成功");
+        }
+        return ResultUtils.error("删除失败");
     }
 
     @Operation(summary = "更新敏感词")
@@ -51,9 +72,11 @@ public class SensitiveWordController {
 
     @Operation(summary = "分页查询敏感词")
     @GetMapping("/page")
-    public IPage<SensitiveWord> getSensitiveWordPage(@RequestParam int page, @RequestParam int size) {
+    public BaseResponse<IPage<SensitiveWord>> getSensitiveWordPage(@RequestParam int page, @RequestParam int size) {
         Page<SensitiveWord> pageParam = new Page<>(page, size);
-        return sensitiveWordService.page(pageParam);
+        Page<SensitiveWord> page1 = sensitiveWordService.page(pageParam);
+        page1.setTotal(page1.getRecords().size());
+        return ResultUtils.success(page1);
     }
 
     @Operation(summary = "查询所有敏感词")

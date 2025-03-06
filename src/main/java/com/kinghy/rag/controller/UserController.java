@@ -45,7 +45,7 @@ public class UserController {
      * 注册
      *
      */
-        @PostMapping("/register")
+    @PostMapping("/register")
     @Operation(summary = "register",description = "注册")
     public BaseResponse register(@RequestBody User user) {
         log.info("注册：{}", user.toString());
