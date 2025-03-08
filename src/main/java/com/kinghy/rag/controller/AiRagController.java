@@ -24,7 +24,9 @@ import com.kinghy.rag.common.ApplicationConstant;
 import com.kinghy.rag.common.BaseResponse;
 import com.kinghy.rag.common.ErrorCode;
 import com.kinghy.rag.common.ResultUtils;
+import com.kinghy.rag.entity.SensitiveWord;
 import com.kinghy.rag.exception.BusinessException;
+import com.kinghy.rag.service.SensitiveWordService;
 import com.kinghy.rag.utils.AliOssUtil;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -81,6 +83,9 @@ public class AiRagController {
     private final ChatModel chatModel;
     private final RerankModel rerankModel;
 
+    @Autowired
+    private SensitiveWordService sensitiveWordService;
+
 
 
     public AiRagController(VectorStore vectorStore, ChatModel chatModel, RerankModel rerankModel) {
@@ -94,6 +99,13 @@ public class AiRagController {
     @GetMapping(value = "/rag", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
     @Loggable
     public Flux<String> generate(@RequestParam(value = "message", defaultValue = "你好") String message) throws IOException {
+        List<SensitiveWord> list = sensitiveWordService.list();
+
+        for(SensitiveWord sensitiveWord: list){
+            if (message.contains(sensitiveWord.getWord())){
+                throw new BusinessException(ErrorCode.PARAMS_ERROR,"包含敏感词:" + sensitiveWord.getWord());
+            }
+        }
         SearchRequest searchRequest = SearchRequest.builder().build();
         String promptTemplate = systemResource.getContentAsString(StandardCharsets.UTF_8);
         ChatClient chatClient = ChatClient.builder(chatModel)

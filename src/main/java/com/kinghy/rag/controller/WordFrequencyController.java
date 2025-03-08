@@ -33,6 +33,7 @@ public class WordFrequencyController {
     @Operation(summary = "page", description = "分页查询")
     public BaseResponse<PageResult> pageQuery(@RequestBody WordFrequencyPageQueryDTO queryDTO) {
         PageResult pageResult = wordFrequencyService.pageQuery(queryDTO);
+        pageResult.setTotal(pageResult.getRecords().size());
         return ResultUtils.success(pageResult);
     }
 
