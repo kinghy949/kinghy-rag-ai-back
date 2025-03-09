@@ -37,7 +37,7 @@ public class TaskJobScheduled {
 
     @Autowired
     private WordFrequencyService wordFrequencyService;
-    @Scheduled(cron = "0/5 * * * * ?")
+    @Scheduled(cron = "0 0 * * * ?")
     public void taskJob() {
         log.info("分词器定时任务开始执行");
         List<WordFrequency> wordFrequencies = wordFrequencyService.list();
