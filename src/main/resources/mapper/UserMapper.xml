@@ -28,7 +28,7 @@
         update tb_user
         <set>
             <if test="name != null">name = #{name},</if>
-            <if test="username != null">username = #{username},</if>
+            <if test="userName != null">username = #{username},</if>
             <if test="password != null">password = #{password},</if>
             <if test="phone != null">phone = #{phone},</if>
             <if test="sex != null">sex = #{sex},</if>

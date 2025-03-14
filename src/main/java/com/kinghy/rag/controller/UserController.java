@@ -156,14 +156,14 @@ public class UserController {
 
     /**
      * 编辑员工信息
-     * @param userDTO
+     * @param user
      * @return
      */
-    @PutMapping
+    @PutMapping("/update")
     @Operation(summary = "info",description = "编辑user信息")
-    public BaseResponse update(@RequestBody UserDTO userDTO){
-        log.info("编辑员工信息：{}", userDTO);
-        userService.updateUser(userDTO);
+    public BaseResponse update(@RequestBody User user){
+        log.info("编辑员工信息：{}", user);
+        userService.updateById(user);
         return ResultUtils.success("编辑成功");
     }
 }

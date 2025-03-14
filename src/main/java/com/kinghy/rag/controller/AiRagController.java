@@ -96,7 +96,7 @@ public class AiRagController {
 
 
     @Operation(summary = "rag", description = "Rag对话接口")
-    @GetMapping(value = "/rag", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/rag")
     @Loggable
     public Flux<String> generate(@RequestParam(value = "message", defaultValue = "你好") String message) throws IOException {
         List<SensitiveWord> list = sensitiveWordService.list();
