@@ -45,5 +45,11 @@ public class WordFrequencyController {
         return ResultUtils.success("清空成功");
     }
 
+    @GetMapping("/getList")
+    @Operation(summary = "getList", description = "获取列表")
+    public BaseResponse<Object> getList() {
+        return ResultUtils.success(wordFrequencyService.list());
+    }
+
 
 }
