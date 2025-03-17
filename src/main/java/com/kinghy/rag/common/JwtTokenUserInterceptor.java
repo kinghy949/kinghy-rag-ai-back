@@ -1,8 +1,8 @@
-package com.kinghy.rag.interceptor;
+package com.kinghy.rag.common;
 
 import com.kinghy.rag.constant.JwtClaimsConstant;
 import com.kinghy.rag.context.BaseContext;
-import com.kinghy.rag.properties.JwtProperties;
+import com.kinghy.rag.config.JwtProperties;
 import com.kinghy.rag.utils.JwtUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.http.HttpServletRequest;

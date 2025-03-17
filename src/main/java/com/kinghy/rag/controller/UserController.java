@@ -9,7 +9,7 @@ import com.kinghy.rag.entity.User;
 import com.kinghy.rag.pojo.dto.UserDTO;
 import com.kinghy.rag.pojo.dto.UserPageQueryDTO;
 import com.kinghy.rag.pojo.vo.UserLoginVO;
-import com.kinghy.rag.properties.JwtProperties;
+import com.kinghy.rag.config.JwtProperties;
 import com.kinghy.rag.service.UserService;
 import com.kinghy.rag.utils.JwtUtil;
 import io.swagger.v3.oas.annotations.Operation;

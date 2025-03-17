@@ -1,6 +1,5 @@
 package com.kinghy.rag.config;
 
-import com.kinghy.rag.properties.AliOssProperties;
 import com.kinghy.rag.utils.AliOssUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;

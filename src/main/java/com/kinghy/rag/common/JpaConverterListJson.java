@@ -1,4 +1,4 @@
-package com.kinghy.rag.conver;
+package com.kinghy.rag.common;
 
 import com.alibaba.fastjson2.JSON;
 import jakarta.persistence.AttributeConverter;

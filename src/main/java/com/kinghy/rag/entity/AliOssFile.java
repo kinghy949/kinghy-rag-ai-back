@@ -1,15 +1,9 @@
 package com.kinghy.rag.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import java.util.Date;
-import java.util.List;
 
-import com.kinghy.rag.conver.JpaConverterListJson;
-import jakarta.persistence.Column;
-import jakarta.persistence.Convert;
 import lombok.Builder;
 import lombok.Data;
 

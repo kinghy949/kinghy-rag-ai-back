@@ -1,4 +1,4 @@
-package com.kinghy.rag.properties;
+package com.kinghy.rag.config;
 
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
