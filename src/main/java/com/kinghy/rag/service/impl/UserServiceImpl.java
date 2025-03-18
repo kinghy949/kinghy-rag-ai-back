@@ -104,7 +104,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     }
 
     @Override
-    public void startOrStop(Integer status, Long id) {
+    public void startOrStop(Integer status, Integer id) {
         User user = User.builder()
                 .status(status)
                 .id(id)

@@ -1,10 +1,10 @@
 package com.kinghy.rag.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import java.util.Date;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import lombok.Data;
 
 /**
@@ -28,15 +28,15 @@ public class SensitiveCategory {
     /**
      * 创建时间
      */
-    private Date createdTime;
+    private LocalDate createdTime;
 
     /**
      * 更新时间
      */
-    private Date updateTime;
+    private LocalDate updateTime;
 
     /**
-     * 
+     * 状态
      */
     private String status;
 }

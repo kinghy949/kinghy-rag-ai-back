@@ -25,7 +25,7 @@ public class User {
      * 主键
      */
     @TableId
-    private Long id;
+    private Integer id;
 
     /**
      * 姓名

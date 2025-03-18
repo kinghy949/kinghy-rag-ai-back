@@ -54,7 +54,6 @@ public class DrawImageController {
 	@GetMapping("/image")
 	@Loggable
 	public void image(HttpServletResponse response, @RequestParam(value = "prompt") String prompt) {
-
 		ImageResponse imageResponse = imageModel.call(new ImagePrompt(prompt));
 		String imageUrl = imageResponse.getResult().getOutput().getUrl();
 

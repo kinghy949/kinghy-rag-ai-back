@@ -22,7 +22,7 @@ public interface UserService extends IService<User> {
 
     PageResult pageQuery(UserPageQueryDTO userPageQueryDTO);
 
-    void startOrStop(Integer status, Long id);
+    void startOrStop(Integer status, Integer id);
 
     void updateUser(UserDTO userDTO);
 
