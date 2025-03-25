@@ -17,6 +17,7 @@
 ## 1. 准备工作
 ### 1.1 准备PostgreSQL数据库并安装好vector-0.7.2扩展后
 1. 创建一个数据库，并执行resources/sql/init.sql
+2. PostgreSQL及vector-0.7.2下载安装教程参考文章：https://blog.csdn.net/typeracer/article/details/140711057
 
 ### 1.2 准备阿里云OSS
 创建一个OSS Bucket,要求与yml文件中配置的bucket名称相同。
