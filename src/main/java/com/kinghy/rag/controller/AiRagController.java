@@ -75,17 +75,12 @@ public class AiRagController {
     @Value("classpath:/prompts/system-qa.st")
     private Resource systemResource;
 
-//    @Value("classpath:/data/spring_ai_alibaba_quickstart.pdf")
-//    private Resource springAiResource;
-
-
     private final VectorStore vectorStore;
     private final ChatModel chatModel;
     private final RerankModel rerankModel;
 
     @Autowired
     private SensitiveWordService sensitiveWordService;
-
 
 
     public AiRagController(VectorStore vectorStore, ChatModel chatModel, RerankModel rerankModel) {

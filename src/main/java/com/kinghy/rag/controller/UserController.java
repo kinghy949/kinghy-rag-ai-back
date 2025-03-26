@@ -6,6 +6,7 @@ import com.kinghy.rag.common.PageResult;
 import com.kinghy.rag.common.ResultUtils;
 import com.kinghy.rag.constant.JwtClaimsConstant;
 import com.kinghy.rag.entity.User;
+import com.kinghy.rag.pojo.dto.PasswordDTO;
 import com.kinghy.rag.pojo.dto.UserDTO;
 import com.kinghy.rag.pojo.dto.UserPageQueryDTO;
 import com.kinghy.rag.pojo.vo.UserLoginVO;
@@ -16,6 +17,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.DigestUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.auth.login.AccountLockedException;
@@ -40,6 +42,27 @@ public class UserController {
     private UserService userService;
     @Autowired
     private JwtProperties jwtProperties;
+
+
+    /**
+     * 修改密码
+     */
+    @PostMapping("/updatePassword")
+    @Operation(summary = "updatePassword",description = "修改密码")
+    public BaseResponse updatePassword(@RequestBody PasswordDTO passwordDTO) {
+        log.info("修改密码：{}", passwordDTO.toString());
+        if (!passwordDTO.getNewPassword().equals(passwordDTO.getConfirmPassword())) {
+            return ResultUtils.error("新密码与确认密码不一致");
+        }
+        User user = userService.getById(passwordDTO.getId());
+        String s = DigestUtils.md5DigestAsHex(passwordDTO.getOldPassword().getBytes());
+        if (!user.getPassword().equals(s)) {
+            return ResultUtils.error("旧密码错误");
+        }
+        user.setPassword(DigestUtils.md5DigestAsHex(passwordDTO.getNewPassword().getBytes()));
+        userService.updateById(user);
+        return ResultUtils.success("修改密码成功");
+    }
 
     /**
      * 注册
