@@ -6,3 +6,5 @@ kinghy:
     bucket-name: kinghy-rag
   dashscope:
     api-key:
+  websearch:
+    api-key:

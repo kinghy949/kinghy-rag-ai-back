@@ -21,51 +21,50 @@ import com.alibaba.cloud.ai.advisor.RetrievalRerankAdvisor;
 import com.alibaba.cloud.ai.model.RerankModel;
 import com.kinghy.rag.annotation.Loggable;
 import com.kinghy.rag.common.ApplicationConstant;
-import com.kinghy.rag.common.BaseResponse;
 import com.kinghy.rag.common.ErrorCode;
-import com.kinghy.rag.common.ResultUtils;
 import com.kinghy.rag.entity.SensitiveWord;
 import com.kinghy.rag.exception.BusinessException;
 import com.kinghy.rag.service.SensitiveWordService;
-import com.kinghy.rag.utils.AliOssUtil;
+import com.kinghy.rag.utils.SearchUtils;
+import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletion;
+import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletionResponse;
+import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatMessage;
+import io.github.lnyocly.ai4j.service.IChatService;
+import io.github.lnyocly.ai4j.service.PlatformType;
+import io.github.lnyocly.ai4j.service.factor.AiService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.util.EntityUtils;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
+import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
+import org.springframework.ai.chat.memory.ChatMemory;
+import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.ai.document.Document;
-import org.springframework.ai.document.DocumentReader;
-import org.springframework.ai.reader.pdf.PagePdfDocumentReader;
-import org.springframework.ai.reader.tika.TikaDocumentReader;
-import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
-import org.springframework.http.codec.ServerSentEvent;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.method.annotation.SseEmitter;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.StandardCopyOption;
-import java.util.Date;
 import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
+import java.util.Map;
+
+import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_CONVERSATION_ID_KEY;
+import static org.springframework.ai.chat.client.advisor.AbstractChatMemoryAdvisor.CHAT_MEMORY_RETRIEVE_SIZE_KEY;
 
 @Tag(name = "AiRagController", description = "Rag接口")
 @Slf4j
@@ -75,12 +74,18 @@ public class AiRagController {
     @Value("classpath:/prompts/system-qa.st")
     private Resource systemResource;
 
+    @Autowired
+    private SearchUtils searchUtils;
+
     private final VectorStore vectorStore;
     private final ChatModel chatModel;
     private final RerankModel rerankModel;
 
     @Autowired
     private SensitiveWordService sensitiveWordService;
+
+    //初始化基于内存的对话记忆
+    private ChatMemory chatMemory = new InMemoryChatMemory();
 
 
     public AiRagController(VectorStore vectorStore, ChatModel chatModel, RerankModel rerankModel) {
@@ -101,6 +106,13 @@ public class AiRagController {
                 throw new BusinessException(ErrorCode.PARAMS_ERROR,"包含敏感词:" + sensitiveWord.getWord());
             }
         }
+        List<Map<String, String>> maps = searchUtils.tavilySearch(message);
+        if (!maps.isEmpty()){
+            for (Map<String, String> map : maps) {
+                message = message + "网络来源:"+ "\n" + map.get("title") + "\n" + map.get("content");
+            }
+        }
+
         SearchRequest searchRequest = SearchRequest.builder().build();
         String promptTemplate = systemResource.getContentAsString(StandardCharsets.UTF_8);
         ChatClient chatClient = ChatClient.builder(chatModel)
@@ -108,6 +120,10 @@ public class AiRagController {
                 .build();
 
         return chatClient.prompt()
+                .advisors(new MessageChatMemoryAdvisor(chatMemory))
+                .advisors(a -> a
+                        .param(CHAT_MEMORY_CONVERSATION_ID_KEY, 0)
+                        .param(CHAT_MEMORY_RETRIEVE_SIZE_KEY, 100))
                 .user(message)
                 .stream()
                 .content();
