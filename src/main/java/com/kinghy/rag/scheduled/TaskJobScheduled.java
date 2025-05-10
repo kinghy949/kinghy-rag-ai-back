@@ -7,6 +7,7 @@ import com.kinghy.rag.service.LogInfoService;
 import com.kinghy.rag.service.WordFrequencyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.wltea.analyzer.core.IKSegmenter;
@@ -37,9 +38,15 @@ public class TaskJobScheduled {
 
     @Autowired
     private WordFrequencyService wordFrequencyService;
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+
+
     @Scheduled(cron = "0 0 * * * ?")
     public void taskJob() {
         log.info("分词器定时任务开始执行");
+        redisTemplate.delete("wordFrequencyList");
         List<WordFrequency> wordFrequencies = wordFrequencyService.list();
         Map<String, List<WordFrequency>> collectMap = wordFrequencies.stream().collect(Collectors.groupingBy(WordFrequency::getWord));
         StringBuilder text = new StringBuilder();

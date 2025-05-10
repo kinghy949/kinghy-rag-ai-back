@@ -26,23 +26,11 @@ import com.kinghy.rag.entity.SensitiveWord;
 import com.kinghy.rag.exception.BusinessException;
 import com.kinghy.rag.service.SensitiveWordService;
 import com.kinghy.rag.utils.SearchUtils;
-import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletion;
-import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatCompletionResponse;
-import io.github.lnyocly.ai4j.platform.openai.chat.entity.ChatMessage;
-import io.github.lnyocly.ai4j.service.IChatService;
-import io.github.lnyocly.ai4j.service.PlatformType;
-import io.github.lnyocly.ai4j.service.factor.AiService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.client.advisor.MessageChatMemoryAdvisor;
-import org.springframework.ai.chat.client.advisor.PromptChatMemoryAdvisor;
 import org.springframework.ai.chat.memory.ChatMemory;
 import org.springframework.ai.chat.memory.InMemoryChatMemory;
 import org.springframework.ai.chat.model.ChatModel;
@@ -56,7 +44,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -120,6 +107,7 @@ public class AiRagController {
                 .build();
 
         return chatClient.prompt()
+                .system("如果检测到向量数据库包含用户提问的信息，那么在回答时不使用网络来源信息进行生成")
                 .advisors(new MessageChatMemoryAdvisor(chatMemory))
                 .advisors(a -> a
                         .param(CHAT_MEMORY_CONVERSATION_ID_KEY, 0)
